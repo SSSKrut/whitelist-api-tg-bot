@@ -1,0 +1,5 @@
+admins:
+  - 123451234
+telegram_token: "12344321:QWERTYqwertyDeusExMachina"
+
+whitelist_url: "http://localhost:3000"

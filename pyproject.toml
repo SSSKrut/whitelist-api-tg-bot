@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "whitelist-api-tg-bot"
+version = "0.1.0"
+description = ""
+authors = ["SSS_Krut"]
+license = "MIT license"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiogram = "^3.13.1"
+PyYAML = "^6.0.2"
+requests = "^2.32.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
