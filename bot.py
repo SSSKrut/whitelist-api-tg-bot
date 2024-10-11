@@ -30,12 +30,13 @@ async def add_message(message: types.Message):
         await message.reply(f"Domain?")
         return
 
-    params = {"domain": f"{domain}"}
+    params = f"domain={domain}"
     command = "allow_domain"
-    response = requests.get(f"{WHITELIST_URL}/{command}", json=params)
-    logging.info(f"Sending request to {response.url}")
-
+    response = requests.get(f"{WHITELIST_URL}/{command}?{params}")
+    logging.info(f"Sending request to {response.request.url}")
+    logging.info(f"Catching request to {response.url}")
     if response.status_code == 200:
+        logging.info(f"{response.text}")
         await message.reply(f"{domain} добавлен")
     else:
         error_message = f"{response.status_code}: {response.text}"
@@ -50,10 +51,11 @@ async def addip_message(message: types.Message):
         await message.reply(f"Ip?")
         return
 
-    params = {"ip": f"{ip}"}
+    params = f"ip={ip}"
     command = "add_ip"
-    response = requests.get(f"{WHITELIST_URL}/{command}", json=params)
-    logging.info(f"Sending request to {response.url}")
+    response = requests.get(f"{WHITELIST_URL}/{command}?{params}")
+    logging.info(f"Sending request to {response.request.url}")
+    logging.info(f"Catching request to {response.url}")
 
     if response.status_code == 200:
         await message.reply(f"{ip} добавлен")
@@ -68,7 +70,8 @@ async def get_message(message: types.Message):
     params = {}
     command = "get_list"
     response = requests.get(f"{WHITELIST_URL}/{command}", json=params)
-    logging.info(f"Sending request to {response.url}")
+    logging.info(f"Sending request to {response.request.url}")
+    logging.info(f"Catching request to {response.url}")
 
     if response.status_code == 200:
         json_data = json.dumps(response.json(), indent=2)
