@@ -3,3 +3,10 @@ admins:
 telegram_token: "12344321:QWERTYqwertyDeusExMachina"
 
 whitelist_url: "http://localhost:3000"
+
+help_message: "/get - get json with all whitelisted IPs\n
+  /add - add domain to whitelist\n
+  /addip - add IP to whitelist\n
+  /getdomains - get json with all added domains\n
+  /getips - get json\n
+  /help - get this message\n"

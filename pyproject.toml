@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "whitelist-api-tg-bot"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["SSS_Krut"]
 license = "MIT license"

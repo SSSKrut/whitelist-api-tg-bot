@@ -35,13 +35,19 @@ async def add_message(message: types.Message):
     response = requests.get(f"{WHITELIST_URL}/{command}?{params}")
     logging.info(f"Sending request to {response.request.url}")
     logging.info(f"Catching request to {response.url}")
-    if response.status_code == 200:
-        logging.info(f"{response.text}")
-        await message.reply(f"{domain} добавлен")
-    else:
+
+    if response.status_code != 200:
         error_message = f"{response.status_code}: {response.text}"
         logging.error(error_message)
         await message.reply(error_message)
+        return
+
+    logging.info(f"{response.text}")
+    if '"success":false' in response.text:
+        await message.reply(f"{domain} имеет неверный формат")
+        return
+
+    await message.reply(f"{domain} добавлен")
 
 
 @dp.message(Command("addip"), IsRegistered())
@@ -52,17 +58,23 @@ async def addip_message(message: types.Message):
         return
 
     params = f"ip={ip}"
-    command = "add_ip"
+    command = "allow_ip"
     response = requests.get(f"{WHITELIST_URL}/{command}?{params}")
     logging.info(f"Sending request to {response.request.url}")
     logging.info(f"Catching request to {response.url}")
 
-    if response.status_code == 200:
-        await message.reply(f"{ip} добавлен")
-    else:
+    if response.status_code != 200:
         error_message = f"{response.status_code}: {response.text}"
         logging.error(error_message)
         await message.reply(error_message)
+        return
+
+    logging.info(f"{response.text}")
+    if '"success":false' in response.text:
+        await message.reply(f"{ip} имеет неверный формат")
+        return
+
+    await message.reply(f"{ip} добавлен")
 
 
 @dp.message(Command("get"), IsRegistered())
@@ -73,16 +85,68 @@ async def get_message(message: types.Message):
     logging.info(f"Sending request to {response.request.url}")
     logging.info(f"Catching request to {response.url}")
 
-    if response.status_code == 200:
-        json_data = json.dumps(response.json(), indent=2)
-        ips_file = types.BufferedInputFile(
-            json_data.encode("utf-8"), filename="whitelist.json"
-        )
-        await message.answer_document(ips_file)
-    else:
+    if response.status_code != 200:
         error_message = f"{response.status_code}: {response.text}"
         logging.error(error_message)
         await message.reply(error_message)
+        return
+
+    json_data = json.dumps(response.json(), indent=2)
+    ips_file = types.BufferedInputFile(
+        json_data.encode("utf-8"), filename="whitelist.json"
+    )
+    await message.answer_document(ips_file)
+
+
+@dp.message(Command("getdomains"), IsRegistered())
+async def getdomains_message(message: types.Message):
+    params = {}
+    command = "get_domains"
+    response = requests.get(f"{WHITELIST_URL}/{command}", json=params)
+    logging.info(f"Sending request to {response.request.url}")
+    logging.info(f"Catching request to {response.url}")
+
+    if response.status_code != 200:
+        error_message = f"{response.status_code}: {response.text}"
+        logging.error(error_message)
+        await message.reply(error_message)
+        return
+
+    json_data = json.dumps(response.json(), indent=2)
+    domains_file = types.BufferedInputFile(
+        json_data.encode("utf-8"), filename="domains.json"
+    )
+
+    count = len(response.json()["domains"])
+    await message.answer(f"{count} domains are in the file:")
+    await message.answer_document(domains_file)
+
+
+@dp.message(Command("getips"), IsRegistered())
+async def getips_message(message: types.Message):
+    params = {}
+    command = "get_ips"
+    response = requests.get(f"{WHITELIST_URL}/{command}", json=params)
+    logging.info(f"Sending request to {response.request.url}")
+    logging.info(f"Catching request to {response.url}")
+
+    if response.status_code != 200:
+        error_message = f"{response.status_code}: {response.text}"
+        logging.error(error_message)
+        await message.reply(error_message)
+        return
+
+    json_data = json.dumps(response.json(), indent=2)
+    ips_file = types.BufferedInputFile(json_data.encode("utf-8"), filename="ips.json")
+
+    count = len(response.json()["ips"])
+    await message.answer(f"{count} ips are in the file:")
+    await message.answer_document(ips_file)
+
+
+@dp.message(Command("help"), IsRegistered())
+async def help_message(message: types.Message):
+    await message.reply(f"{HELP_MESSAGE}")
 
 
 # Filter for any not-command messages from registered users

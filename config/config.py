@@ -17,3 +17,5 @@ BOT_TOKEN = config["telegram_token"]
 ADMIN_ID = config["admins"]
 
 WHITELIST_URL = config["whitelist_url"]
+
+HELP_MESSAGE = config["help_message"]

@@ -1,1 +1,1 @@
-from .config import *
+from .config import BOT_TOKEN, ADMIN_ID, WHITELIST_URL, HELP_MESSAGE
